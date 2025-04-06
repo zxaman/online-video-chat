@@ -1,59 +1,125 @@
-# Client
+# Video Chat Application
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.5.
+A real-time video chat application built with Angular and WebRTC, enabling random video chat connections between users.
 
-## Development server
+## Tech Stack
 
-To start a local development server, run:
+- **Frontend**: Angular 19.2
+- **Backend**: Node.js with Express
+- **Real-time Communication**: Socket.IO
+- **Video Streaming**: WebRTC
+- **SSL/Security**: HTTPS enabled for secure connections
 
-```bash
-ng serve
-```
+## Prerequisites
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Node.js (Latest LTS version)
+- Angular CLI v19.2.5
+- SSL certificate for local development (included)
 
-## Code scaffolding
+## Project Setup
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+1. Install dependencies for both client and server:
 
 ```bash
-ng generate --help
+# Install client dependencies
+npm install
+
+# Install server dependencies
+cd server
+npm install
 ```
 
-## Building
+## Development Server
 
-To build the project run:
+1. Start the Angular development server:
 
 ```bash
-ng build
+npm start
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+This will launch the application with SSL enabled and proxy configuration at `https://localhost:4200/`
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+2. Start the backend server:
 
 ```bash
-ng test
+cd server
+node server.js
 ```
 
-## Running end-to-end tests
+The server will start on the configured port with WebSocket support.
 
-For end-to-end (e2e) testing, run:
+## Building for Production
+
+To create a production build:
 
 ```bash
-ng e2e
+npm run build
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+The build artifacts will be stored in the `dist/` directory.
+
+## Deployment
+
+### Frontend Deployment (Netlify)
+
+1. Create a new site on Netlify
+2. Configure build settings:
+   - Build command: `npm run build`
+   - Publish directory: `dist/client/browser`
+3. Configure environment variables if needed
+4. Deploy!
+
+### Backend Deployment (ngrok)
+
+To expose your local server to the internet using ngrok:
+
+1. Install ngrok globally:
+```bash
+npm install -g ngrok
+```
+
+2. Start your server locally
+
+3. Create a tunnel:
+```bash
+ngrok http <your-server-port>
+```
+
+4. Update the frontend configuration to use the ngrok URL
+
+## How It Works
+
+1. **User Connection**:
+   - Users connect to the application
+   - Socket.IO establishes a real-time connection
+
+2. **Matching Process**:
+   - Users enter the waiting pool
+   - Server pairs random users together
+
+3. **Video Chat**:
+   - WebRTC establishes peer-to-peer connection
+   - Video/Audio streams are exchanged directly between users
+   - Socket.IO handles signaling and ICE candidate exchange
+
+## Features
+
+- Random user matching
+- Real-time video chat
+- Secure WebRTC connections
+- Automatic peer discovery
+- SSL encryption
+- Cross-browser compatibility
+
+## Testing
+
+- Run unit tests: `npm test`
+- Run end-to-end tests: `ng e2e`
 
 ## Additional Resources
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- [Angular Documentation](https://angular.dev/)
+- [WebRTC Web APIs](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API)
+- [Socket.IO Documentation](https://socket.io/docs/v4/)
+- [Netlify Deployment Guide](https://docs.netlify.com/)
+- [ngrok Documentation](https://ngrok.com/docs/)

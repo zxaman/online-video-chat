@@ -94,7 +94,7 @@ export class WebRTCService {
 
   private initializeSocketConnection() {
     // Use the ngrok URL for the signaling server
-    const serverUrl = 'https://839b-103-88-101-242.ngrok-free.app';
+    const serverUrl = 'https://ba2b-103-88-101-242.ngrok-free.app';
     
     console.log('Initializing connection to signaling server:', serverUrl);
     
