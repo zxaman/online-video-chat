@@ -93,12 +93,8 @@ export class WebRTCService {
   }
 
   private initializeSocketConnection() {
-    // For local development, use the full server URL
-    const isLocalDevelopment = window.location.hostname === 'localhost' || 
-                              window.location.hostname === '127.0.0.1';
-    
-    // Use the full server URL with the correct port
-    const serverUrl = 'http://localhost:3000';
+    // Use the ngrok URL for the signaling server
+    const serverUrl = 'https://839b-103-88-101-242.ngrok-free.app';
     
     console.log('Initializing connection to signaling server:', serverUrl);
     

@@ -1,25 +1,29 @@
 const express = require('express');
 const http = require('http');
+const https = require('https');
+const fs = require('fs');
 const { Server } = require('socket.io');
 const cors = require('cors');
+const path = require('path');
+const ngrok = require('ngrok');
 
 // Initialize Express app
 const app = express();
 
 // Configure CORS for Express routes
 app.use(cors({
-  origin: ['http://localhost:4200', 'https://localhost:4200'],
+  origin: true, // Allow all origins
   methods: ['GET', 'POST'],
   credentials: true
 }));
 
-// Create HTTP server
+// Create HTTP server for local development
 const server = http.createServer(app);
 
 // Initialize Socket.IO with enhanced configuration
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:4200', 'https://localhost:4200'],
+    origin: true, // Allow all origins
     methods: ['GET', 'POST'],
     credentials: true,
     allowedHeaders: ['*']
@@ -162,16 +166,36 @@ async function findAvailablePort(startPort) {
 }
 
 // Start the server with port finding and error handling
+// Create SSL certificate directory and generate self-signed certificates if they don't exist
+// Connect to ngrok and start the server
+const startNgrok = async (port) => {
+  try {
+    const url = await ngrok.connect({
+      proto: 'http',
+      addr: port,
+      bind_tls: true
+    });
+    console.log(`Ngrok tunnel established at: ${url}`);
+    console.log('Share this URL with others to connect to your server');
+    return url;
+  } catch (error) {
+    console.error('Failed to establish ngrok tunnel:', error);
+    process.exit(1);
+  }
+};
+
 const startServer = async () => {
   try {
     const desiredPort = process.env.PORT || 3000;
     const port = await findAvailablePort(desiredPort);
     
-    server.listen(port, () => {
+    server.listen(port, async () => {
       console.log(`Signaling server running on port ${port}`);
       if (port !== desiredPort) {
         console.log(`Note: Original port ${desiredPort} was in use, using port ${port} instead`);
       }
+      // Start ngrok tunnel after server is running
+      await startNgrok(port);
     });
 
     server.on('error', (error) => {
@@ -179,7 +203,28 @@ const startServer = async () => {
         console.error(`Port ${port} is in use, trying another port...`);
         setTimeout(() => {
           server.close();
-          startServer();
+          // Connect to ngrok and start the server
+const startNgrok = async () => {
+  try {
+    const url = await ngrok.connect({
+      proto: 'https',
+      addr: process.env.PORT || 3000,
+      bind_tls: true
+    });
+    console.log(`Ngrok tunnel established at: ${url}`);
+    console.log('Share this URL with others to connect to your server');
+    return url;
+  } catch (error) {
+    console.error('Failed to establish ngrok tunnel:', error);
+    process.exit(1);
+  }
+};
+
+// Start both the server and ngrok tunnel
+(async () => {
+  await startServer();
+  await startNgrok();
+})();
         }, 1000);
       } else {
         console.error('Server error:', error);
