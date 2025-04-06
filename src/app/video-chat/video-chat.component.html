@@ -1,0 +1,43 @@
+<div class="video-chat-container">
+  <div *ngIf="mediaError" class="error-message">
+    {{ mediaError }}
+  </div>
+  <div class="video-grid">
+    <div class="video-wrapper local-video">
+      <video #localVideo autoplay playsinline muted></video>
+      <div class="video-label">You</div>
+      <div class="device-status" *ngIf="hasMediaPermissions">
+        <span class="status-icon" [class.active]="isCameraEnabled">📹</span>
+        <span class="status-icon" [class.active]="isAudioEnabled">🎤</span>
+      </div>
+    </div>
+    <div class="video-wrapper remote-video">
+      <video #remoteVideo autoplay playsinline></video>
+      <div class="video-label" *ngIf="isConnected">Partner</div>
+      <div class="video-label" *ngIf="!isConnected && isFindingPartner">Finding partner...</div>
+      <div class="video-label" *ngIf="!isConnected && !isFindingPartner">Click 'Find Partner' to start</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="media-controls">
+      <button (click)="toggleCamera()" [class.active]="isCameraEnabled" class="control-btn" [disabled]="!hasMediaPermissions">
+        <span class="material-icons">{{ isCameraEnabled ? 'videocam' : 'videocam_off' }}</span>
+      </button>
+      <button (click)="toggleAudio()" [class.active]="isAudioEnabled" class="control-btn" [disabled]="!hasMediaPermissions">
+        <span class="material-icons">{{ isAudioEnabled ? 'mic' : 'mic_off' }}</span>
+      </button>
+    </div>
+    <div class="chat-controls">
+      <button (click)="findPartner()" *ngIf="!isConnected && !isFindingPartner" class="primary-btn" [disabled]="!hasMediaPermissions">
+        Find Partner
+      </button>
+      <button (click)="skipPartner()" *ngIf="isConnected" class="secondary-btn">
+        Skip
+      </button>
+      <button (click)="endChat()" *ngIf="isConnected || isFindingPartner" class="danger-btn">
+        End Chat
+      </button>
+    </div>
+  </div>
+</div>
